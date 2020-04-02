@@ -1,17 +1,8 @@
-# Build the Twitter Pinboard Cleanup Job
-# https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets
-
 name: CI
 
 env:
   TWITTER_CONSUMER_KEY: ${{ secrets.TWITTER_CONSUMER_KEY }}
   TWITTER_CONSUMER_SECRET: ${{ secrets.TWITTER_CONSUMER_SECRET }}
-#  PINBOARD_TOKEN: ${{ secrets.PINBOARD_TOKEN }}
-#  CF_USER: ${{ secrets.CF_USER }}
-#  CF_PASSWORD: ${{ secrets.CF_PASSWORD }}
-#  CF_SPACE: ${{ secrets.CF_SPACE }}
-#  CF_API: ${{ secrets.CF_API }}
-#  CF_ORG: ${{ secrets.CF_ORG  }}
   ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME  }}
   ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD  }}
 
