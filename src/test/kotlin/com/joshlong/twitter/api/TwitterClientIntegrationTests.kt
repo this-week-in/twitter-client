@@ -20,8 +20,8 @@ class TwitterClientIntegrationTests {
 
 
 						fun keyIfItExists(key: String): String = if (mutableMap.containsKey(key)) mutableMap[key]!!.trim() else ""
-						val apiKey = keyIfItExists("TWITTER_TWI_CLIENT_KEY")
-						val apiKeySecret = keyIfItExists("TWITTER_TWI_CLIENT_KEY_SECRET")
+						val apiKey = keyIfItExists("TWITTER_CONSUMER_KEY")
+						val apiKeySecret = keyIfItExists("TWITTER_CONSUMER_SECRET")
 						interceptors.add(BearerTokenInterceptor(apiKey, apiKeySecret))
 					}
 
