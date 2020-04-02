@@ -1,7 +1,5 @@
-# Twitter Pinboard Cleanup Job 
-![CI](https://github.com/this-week-in/twitter-pinboard-cleanup-job/workflows/CI/badge.svg)
+# A Twitter Client
 
-This goes through all the tweets that i've bookmarked with Pinboard that didn't get a proper description, pulls down the relevant tweet and uses that tweet's text to enrich the Pinboard bookmark. It's run as a period job on Cloud Foundry.
- 
-Note: this should get merged into the `twitter-organizer-job` which organizes my Twitter followers and followees.
+![CI](https://github.com/this-week-in/twitter-client/workflows/CI/badge.svg)
 
+Spring Social Twitter is now defunct, so this will be my bespoke and super lightweight Twitter Client for all interactions in `this-week-in`. 
