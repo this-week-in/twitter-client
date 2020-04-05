@@ -10,7 +10,6 @@ import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 /**
  * A client to read tweets from a given user's timeline.
  *
