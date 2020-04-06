@@ -9,6 +9,8 @@ import java.lang.Boolean
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.atomic.AtomicLong
 
 /**
  * A client to read tweets from a given user's timeline.
@@ -21,13 +23,24 @@ open class SimpleTwitterClient(private val restTemplate: RestTemplate) : Twitter
 
 //	init {
 //		TODO("need to implement follow(profileId)")
-//		TODO("Need to implement reading a users' friends")
 //	}
 
 	private val log = LogFactory.getLog(SimpleTwitterClient::class.java)
 	private val formatterString = "EEE MMM d HH:mm:ss ZZ yyyy"
 	private val objectMapper = ObjectMapper()
 	private val formatter = SimpleDateFormat(formatterString)
+
+	override fun getFriends(profileId: Long): Iterator<User> {
+		val url = "https://api.twitter.com/1.1/friends/list.json?user_id=${profileId}&count=200"
+		return TwitterApiCursorIterator<User>(
+				restTemplate = this.restTemplate,
+				initialCollection = { mutableListOf() },
+				url = url,
+				mapper = { jsonNode -> jsonNode["users"].map { buildUser(it) } },
+				shouldContinue = { true }
+		)
+	}
+
 
 	override fun getUserProfile(profileId: Long): User {
 		val userUrl = "https://api.twitter.com/1.1/users/show.json?user_id=${profileId}"
@@ -139,5 +152,42 @@ open class SimpleTwitterClient(private val restTemplate: RestTemplate) : Twitter
 		jsonNode.forEach { tweets.add(buildTweet(it)) }
 		return tweets
 	}
+}
 
+/**
+ * TODO support rate limiting
+ */
+class TwitterApiCursorIterator<T>(
+		private val restTemplate: RestTemplate,
+		private val url: String,
+		private val initialCollection: () -> List<T> = { listOf() },
+		private val mapper: (JsonNode) -> List<T>,
+		private val shouldContinue: (cursor: Long) -> kotlin.Boolean
+) : Iterator<T> {
+
+	private val log = LogFactory.getLog(javaClass)
+	private val cursor = AtomicLong(-1)
+	private val queue = LinkedBlockingQueue<T>().apply { addAll(initialCollection()) }
+	private val monitor = Object()
+	private val lastRefreshSize = AtomicLong(-1)
+
+	override fun next(): T {
+		synchronized(this.monitor) {
+			val cursor: Long = this.cursor.get()
+			if (this.queue.isEmpty()) {
+				val urlWithCursor = "${url}&cursor=${cursor}"
+				val response = restTemplate.getForEntity(urlWithCursor, JsonNode::class.java).body!!
+				val results: List<T> = mapper(response)
+				this.cursor.set(response.get("next_cursor").longValue())
+				this.queue.addAll(results)
+				this.lastRefreshSize.set(results.size * 1L)
+			}
+			return queue.poll()
+		}
+	}
+
+	override fun hasNext(): kotlin.Boolean =
+			synchronized(this.monitor) {
+				return (cursor.get() > 0 || queue.size > 0 || cursor.get() == -1L)
+			}
 }

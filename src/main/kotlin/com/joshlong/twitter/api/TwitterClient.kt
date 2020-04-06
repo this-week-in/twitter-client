@@ -2,6 +2,8 @@ package com.joshlong.twitter.api
 
 interface TwitterClient {
 
+	fun getFriends(profileId: Long): Iterator<User>
+
 	/**
 	 * Returns all the tweets for a given user, optionally
 	 * restricting it to a last message received.

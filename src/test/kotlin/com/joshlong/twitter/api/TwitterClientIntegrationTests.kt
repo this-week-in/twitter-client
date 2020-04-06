@@ -5,6 +5,7 @@ import org.junit.Assert
 import org.junit.Test
 import org.junit.jupiter.api.Disabled
 import org.springframework.web.client.RestTemplate
+import java.util.concurrent.atomic.AtomicInteger
 import java.util.stream.Collectors
 import kotlin.streams.asSequence
 import kotlin.streams.asStream
@@ -25,6 +26,20 @@ class TwitterClientIntegrationTests {
 
 	private val twitterClient = SimpleTwitterClient(authenticatedRestTemplate)
 
+	private val profileId = 4710974593
+
+
+	@Test
+	fun `get all the friends for a user`() {
+		val counter = AtomicInteger()
+		val friends = this.twitterClient.getFriends(this.profileId)
+		friends.forEach {
+			counter.incrementAndGet()
+			println(it)
+		}
+		Assert.assertTrue(counter.get() > 0L)
+	}
+
 	@Test
 	fun `should be able to get tweets from other users`() {
 		val username = "SpringCentral"
@@ -37,8 +52,8 @@ class TwitterClientIntegrationTests {
 
 	@Test
 	fun `get a user profile `() {
-		val userForProfile = this.twitterClient.getUserProfile(4324751L)
-		Assert.assertEquals(userForProfile.screenName, "starbuxman")
+		val userForProfile = this.twitterClient.getUserProfile(this.profileId)
+		Assert.assertEquals(userForProfile.screenName, "honeycombio")
 	}
 
 	@Test
