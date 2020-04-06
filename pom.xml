@@ -115,15 +115,10 @@
             </plugin>
         </plugins>
     </build>
-    <repositories>
-        <repository>
-            <id>spring-snapshots</id>
-            <name>Spring Snapshots</name>
-            <url>https://repo.spring.io/snapshot</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
+   
+
+
+ <repositories>
         <repository>
             <snapshots>
                 <enabled>false</enabled>
@@ -131,7 +126,15 @@
             <id>central</id>
             <name>libs-release</name>
             <url>
-                https://cloudnativejava.artifactoryonline.com/cloudnativejava/libs-release
+                https://cloudnativejava.jfrog.io/cloudnativejava/libs-release
+            </url>
+        </repository>
+        <repository>
+            <snapshots/>
+            <id>snapshots</id>
+            <name>libs-snapshot</name>
+            <url>
+                https://cloudnativejava.jfrog.io/cloudnativejava/libs-snapshot
             </url>
         </repository>
     </repositories>
@@ -143,7 +146,7 @@
             <id>central</id>
             <name>plugins-release</name>
             <url>
-                https://cloudnativejava.artifactoryonline.com/cloudnativejava/plugins-release
+                https://cloudnativejava.jfrog.io/cloudnativejava/plugins-release
             </url>
         </pluginRepository>
         <pluginRepository>
@@ -151,9 +154,9 @@
             <id>snapshots</id>
             <name>plugins-snapshot</name>
             <url>
-                https://cloudnativejava.artifactoryonline.com/cloudnativejava/plugins-snapshot
+                https://cloudnativejava.jfrog.io/cloudnativejava/plugins-snapshot
             </url>
         </pluginRepository>
-
     </pluginRepositories>
+   
 </project>
