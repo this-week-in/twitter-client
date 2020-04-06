@@ -19,12 +19,21 @@ import java.util.*
  */
 open class SimpleTwitterClient(private val restTemplate: RestTemplate) : TwitterClient {
 
+//	init {
+//		TODO("need to implement follow(profileId)")
+//		TODO("Need to implement reading a users' friends")
+//	}
 
 	private val log = LogFactory.getLog(SimpleTwitterClient::class.java)
 	private val formatterString = "EEE MMM d HH:mm:ss ZZ yyyy"
 	private val objectMapper = ObjectMapper()
-
 	private val formatter = SimpleDateFormat(formatterString)
+
+	override fun getUserProfile(profileId: Long): User {
+		val userUrl = "https://api.twitter.com/1.1/users/show.json?user_id=${profileId}"
+		val json = this.restTemplate.getForEntity(userUrl, JsonNode::class.java).body!!
+		return buildUser(json)
+	}
 
 	override fun getUserTimeline(username: String, sinceId: Long): List<Tweet> {
 		val userTimelineUrl = "https://api.twitter.com/1.1/statuses/user_timeline.json"

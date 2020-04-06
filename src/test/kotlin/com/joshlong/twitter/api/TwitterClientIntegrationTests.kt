@@ -17,8 +17,6 @@ class TwitterClientIntegrationTests {
 			RestTemplate()
 					.apply {
 						val mutableMap = System.getenv()
-
-
 						fun keyIfItExists(key: String): String = if (mutableMap.containsKey(key)) mutableMap[key]!!.trim() else ""
 						val apiKey = keyIfItExists("TWITTER_CONSUMER_KEY")
 						val apiKeySecret = keyIfItExists("TWITTER_CONSUMER_SECRET")
@@ -35,6 +33,12 @@ class TwitterClientIntegrationTests {
 		timeline.forEach {
 			log.info(it)
 		}
+	}
+
+	@Test
+	fun `get a user profile `() {
+		val userForProfile = this.twitterClient.getUserProfile(4324751L)
+		Assert.assertEquals(userForProfile.screenName, "starbuxman")
 	}
 
 	@Test

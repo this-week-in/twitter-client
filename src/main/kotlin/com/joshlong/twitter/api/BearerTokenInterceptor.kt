@@ -8,6 +8,7 @@ import org.springframework.http.RequestEntity
 import org.springframework.http.client.ClientHttpRequestExecution
 import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.http.client.ClientHttpResponse
+import org.springframework.util.Assert
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.client.RestTemplate
 import java.net.URI
@@ -17,15 +18,21 @@ import java.util.concurrent.atomic.AtomicReference
 class BearerTokenInterceptor(private val key: String, private val secret: String)
 	: ClientHttpRequestInterceptor {
 
+	init {
+		Assert.hasText(key, "the Twitter consumer key must not be empty!")
+		Assert.hasText(secret, "the Twitter consumer secret must not be empty!")
+	}
+
 	private val accessTokenReference = AtomicReference<String>()
 	private val accessTokenTemplate = RestTemplate()
-	private fun shouldRefreshToken() = this.accessTokenReference.get() == null
 
 	override fun intercept(request: HttpRequest, body: ByteArray, execution: ClientHttpRequestExecution): ClientHttpResponse {
 		val token = obtainToken(accessTokenTemplate, key, secret)
 		request.headers.add(HttpHeaders.AUTHORIZATION, "Bearer $token")
 		return execution.execute(request, body)
 	}
+
+	private fun shouldRefreshToken() = this.accessTokenReference.get() == null
 
 	private fun obtainToken(restTemplate: RestTemplate, key: String, secret: String):
 			String {
